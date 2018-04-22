@@ -5,25 +5,20 @@ import Field from '../../../utils/FieldAdapter';
 import { Form, RenderField, Row, Col, Label, Button } from '../../common/components/web';
 import { required, validateForm } from '../../../../../common/validation';
 
-const commentFormSchema = {
+const transactionFormSchema = {
   content: [required]
 };
 
-const validate = values => validateForm(values, commentFormSchema);
+const validate = values => validateForm(values, transactionFormSchema);
 
-const PostCommentForm = ({ values, handleSubmit, comment }) => {
+const PostTransactionForm = ({ values, handleSubmit, transaction }) => {
   return (
-    <Form name="comment" onSubmit={handleSubmit}>
+    <Form name="transaction" onSubmit={handleSubmit}>
       <Row>
-        <Col xs={2}>
-          <Label>{comment.id === null ? 'Add comment' : 'Edit comment'}</Label>
-        </Col>
-        <Col xs={8}>
-          <Field name="content" component={RenderField} type="text" value={values.content} placeholder="Comment" />
-        </Col>
+        <Col xs={10} />
         <Col xs={2}>
           <Button color="primary" type="submit" className="float-right">
-            Save
+            Get Transactions
           </Button>
         </Col>
       </Row>
@@ -31,9 +26,9 @@ const PostCommentForm = ({ values, handleSubmit, comment }) => {
   );
 };
 
-PostCommentForm.propTypes = {
+PostTransactionForm.propTypes = {
   handleSubmit: PropTypes.func,
-  comment: PropTypes.object,
+  transaction: PropTypes.object,
   onSubmit: PropTypes.func,
   submitting: PropTypes.bool,
   values: PropTypes.object,
@@ -41,15 +36,15 @@ PostCommentForm.propTypes = {
   changeContent: PropTypes.func
 };
 
-const PostCommentFormWithFormik = withFormik({
-  mapPropsToValues: props => ({ content: props.comment && props.comment.content }),
+const PostTransactionFormWithFormik = withFormik({
+  mapPropsToValues: props => ({ content: props.transaction && props.transaction.content }),
   async handleSubmit(values, { resetForm, props: { onSubmit } }) {
     await onSubmit(values);
     resetForm({ content: '' });
   },
-  validate: values => validate(values),
-  displayName: 'CommentForm', // helps with React DevTools,
+  // validate: values => validate(values),
+  displayName: 'TransactionForm', // helps with React DevTools,
   enableReinitialize: true
 });
 
-export default PostCommentFormWithFormik(PostCommentForm);
+export default PostTransactionFormWithFormik(PostTransactionForm);

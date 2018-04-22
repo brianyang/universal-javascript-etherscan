@@ -1,0 +1,6 @@
+fragment TransactionInfo on Transaction {
+  id
+  content
+  balance
+  timeStamp
+}

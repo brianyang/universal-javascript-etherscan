@@ -16,10 +16,10 @@ export default class Post {
       .limit(limit);
   }
 
-  async getCommentsForPostIds(postIds) {
+  async getTransactionsForPostIds(postIds) {
     const res = await knex
-      .select('id', 'content', 'post_id AS postId')
-      .from('comment')
+      .select('id', 'content', 'balance', 'timeStamp', 'post_id AS postId')
+      .from('transaction')
       .whereIn('post_id', postIds);
 
     return orderedFor(res, postIds, 'postId', false);
@@ -67,28 +67,28 @@ export default class Post {
       });
   }
 
-  addComment({ content, postId }) {
-    return knex('comment')
-      .insert({ content, post_id: postId })
+  addTransaction({ content, balance, timeStamp, postId }) {
+    return knex('transaction')
+      .insert({ content, balance, timeStamp, post_id: postId })
       .returning('id');
   }
 
-  getComment(id) {
+  getTransaction(id) {
     return knex
-      .select('id', 'content')
-      .from('comment')
+      .select('id', 'content', 'balance', 'timeStamp')
+      .from('transaction')
       .where('id', '=', id)
       .first();
   }
 
-  deleteComment(id) {
-    return knex('comment')
+  deleteTransaction(id) {
+    return knex('transaction')
       .where('id', '=', id)
       .del();
   }
 
-  editComment({ id, content }) {
-    return knex('comment')
+  editTransaction({ id, content }) {
+    return knex('transaction')
       .where('id', '=', id)
       .update({
         content: content

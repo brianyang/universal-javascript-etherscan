@@ -5,24 +5,24 @@ import _ from 'lodash';
 import Renderer from '../../../testHelpers/Renderer';
 import POSTS_SUBSCRIPTION from '../graphql/PostsSubscription.graphql';
 import POST_SUBSCRIPTION from '../graphql/PostSubscription.graphql';
-import COMMENT_SUBSCRIPTION from '../graphql/CommentSubscription.graphql';
+import TRANSACTION_SUBSCRIPTION from '../graphql/TransactionSubscription.graphql';
 
 const createNode = id => ({
   id: `${id}`,
   title: `Post title ${id}`,
   content: `Post content ${id}`,
-  comments: [
-    { id: id * 1000 + 1, content: 'Post comment 1', __typename: 'Comment' },
-    { id: id * 1000 + 2, content: 'Post comment 2', __typename: 'Comment' }
+  transactions: [
+    { id: id * 1000 + 1, content: 'Post transaction 1', __typename: 'Transaction' },
+    { id: id * 1000 + 2, content: 'Post transaction 2', __typename: 'Transaction' }
   ],
   __typename: 'Post'
 });
 
 const mutations = {
   editPost: true,
-  addComment: true,
-  editComment: true,
-  onCommentSelect: true
+  addTransaction: true,
+  editTransaction: true,
+  onTransactionSelect: true
 };
 
 const mocks = {
@@ -54,12 +54,12 @@ const mocks = {
   }),
   Mutation: () => ({
     deletePost: (obj, { id }) => createNode(id),
-    deleteComment: (obj, { input }) => input,
+    deleteTransaction: (obj, { input }) => input,
     ...mutations
   })
 };
 
-describe('Posts and comments example UI works', () => {
+describe('Posts and transactions example UI works', () => {
   const renderer = new Renderer(mocks, {});
   let app;
   let content;
@@ -253,114 +253,114 @@ describe('Posts and comments example UI works', () => {
     expect(content.text()).to.include('Edit Post');
   });
 
-  step('Comment adding works', done => {
-    mutations.addComment = (obj, { input }) => {
+  step('Transaction adding works', done => {
+    mutations.addTransaction = (obj, { input }) => {
       expect(input.postId).to.equal(3);
-      expect(input.content).to.equal('Post comment 24');
+      expect(input.content).to.equal('Post transaction 24');
       done();
       return input;
     };
 
-    const commentForm = content.find('form[name="comment"]');
-    commentForm
+    const transactionForm = content.find('form[name="transaction"]');
+    transactionForm
       .find('[name="content"]')
       .last()
-      .simulate('change', { target: { name: 'content', value: 'Post comment 24' } });
-    commentForm.last().simulate('submit');
+      .simulate('change', { target: { name: 'content', value: 'Post transaction 24' } });
+    transactionForm.last().simulate('submit');
   });
 
-  step('Comment adding works after submit', () => {
-    expect(content.text()).to.include('Post comment 24');
+  step('Transaction adding works after submit', () => {
+    expect(content.text()).to.include('Post transaction 24');
   });
 
-  step('Updates comment form on comment added got from subscription', () => {
-    const subscription = renderer.getSubscriptions(COMMENT_SUBSCRIPTION)[0];
+  step('Updates transaction form on transaction added got from subscription', () => {
+    const subscription = renderer.getSubscriptions(TRANSACTION_SUBSCRIPTION)[0];
     subscription.next({
       data: {
-        commentUpdated: {
+        transactionUpdated: {
           mutation: 'CREATED',
           id: 3003,
           postId: 3,
           node: {
             id: 3003,
-            content: 'Post comment 3',
-            __typename: 'Comment'
+            content: 'Post transaction 3',
+            __typename: 'Transaction'
           },
-          __typename: 'UpdateCommentPayload'
+          __typename: 'UpdateTransactionPayload'
         }
       }
     });
 
-    expect(content.text()).to.include('Post comment 3');
+    expect(content.text()).to.include('Post transaction 3');
   });
 
-  step('Updates comment form on comment deleted got from subscription', () => {
-    const subscription = renderer.getSubscriptions(COMMENT_SUBSCRIPTION)[0];
+  step('Updates transaction form on transaction deleted got from subscription', () => {
+    const subscription = renderer.getSubscriptions(TRANSACTION_SUBSCRIPTION)[0];
     subscription.next({
       data: {
-        commentUpdated: {
+        transactionUpdated: {
           mutation: 'DELETED',
           id: 3003,
           postId: 3,
           node: {
             id: 3003,
-            content: 'Post comment 3',
-            __typename: 'Comment'
+            content: 'Post transaction 3',
+            __typename: 'Transaction'
           },
-          __typename: 'UpdateCommentPayload'
+          __typename: 'UpdateTransactionPayload'
         }
       }
     });
-    expect(content.text()).to.not.include('Post comment 3');
+    expect(content.text()).to.not.include('Post transaction 3');
   });
 
-  step('Comment deleting optimistically removes comment', () => {
-    const deleteButtons = content.find('.delete-comment');
+  step('Transaction deleting optimistically removes transaction', () => {
+    const deleteButtons = content.find('.delete-transaction');
     expect(deleteButtons).has.lengthOf(9);
     deleteButtons.last().simulate('click');
 
     app.update();
     content = app.find('#content').last();
-    expect(content.text()).to.not.include('Post comment 24');
-    expect(content.find('.delete-comment')).has.lengthOf(6);
+    expect(content.text()).to.not.include('Post transaction 24');
+    expect(content.find('.delete-transaction')).has.lengthOf(6);
   });
 
-  step('Clicking comment delete removes the comment', () => {
-    expect(content.text()).to.not.include('Post comment 24');
-    expect(content.find('.delete-comment')).has.lengthOf(6);
+  step('Clicking transaction delete removes the transaction', () => {
+    expect(content.text()).to.not.include('Post transaction 24');
+    expect(content.find('.delete-transaction')).has.lengthOf(6);
   });
 
-  step('Comment editing works', async done => {
-    mutations.editComment = (obj, { input }) => {
+  step('Transaction editing works', async done => {
+    mutations.editTransaction = (obj, { input }) => {
       expect(input.postId).to.equal(3);
-      expect(input.content).to.equal('Edited comment 2');
+      expect(input.content).to.equal('Edited transaction 2');
       done();
       return input;
     };
-    const editButtons = content.find('.edit-comment');
+    const editButtons = content.find('.edit-transaction');
     expect(editButtons).has.lengthOf(6);
     editButtons.last().simulate('click');
     editButtons.last().simulate('click');
-    const commentForm = content.find('form[name="comment"]');
+    const transactionForm = content.find('form[name="transaction"]');
     expect(
-      commentForm
+      transactionForm
         .find('[name="content"]')
         .last()
         .instance().value
-    ).to.equal('Post comment 2');
-    commentForm
+    ).to.equal('Post transaction 2');
+    transactionForm
       .find('[name="content"]')
       .last()
-      .simulate('change', { target: { name: 'content', value: 'Edited comment 2' } });
-    commentForm.simulate('submit');
+      .simulate('change', { target: { name: 'content', value: 'Edited transaction 2' } });
+    transactionForm.simulate('submit');
   });
 
-  step('Comment editing works', () => {
-    expect(content.text()).to.include('Edited comment 2');
+  step('Transaction editing works', () => {
+    expect(content.text()).to.include('Edited transaction 2');
   });
 
   step('Clicking back button takes to post list', () => {
-    expect(content.text()).to.include('Edited comment 2');
+    expect(content.text()).to.include('Edited transaction 2');
     const backButton = content.find('#back-button');
     backButton.last().simulate('click', { button: 0 });
     app.update();

@@ -1,0 +1,7 @@
+#import "./Transaction.graphql"
+
+mutation editTransaction($input: EditTransactionInput!) {
+  editTransaction(input: $input) {
+    ... TransactionInfo
+  }
+}

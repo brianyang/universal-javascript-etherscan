@@ -5,43 +5,43 @@ import Field from '../../../utils/FieldAdapter';
 import { FormView, RenderField, FormButton } from '../../common/components/native';
 import { required, validateForm } from '../../../../../common/validation';
 
-const commentFormSchema = {
+const transactionFormSchema = {
   content: [required]
 };
 
-const validate = values => validateForm(values, commentFormSchema);
+const validate = values => validateForm(values, transactionFormSchema);
 
-const PostCommentForm = ({ values, handleSubmit, comment }) => {
+const PostTransactionForm = ({ values, handleSubmit, transaction }) => {
   let operation = 'Add';
-  if (comment.id !== null) {
+  if (transaction.id !== null) {
     operation = 'Edit';
   }
 
   return (
     <FormView>
-      <Field name="content" component={RenderField} type="text" value={values.content} placeholder="Comment" />
+      <Field name="content" component={RenderField} type="text" value={values.content} placeholder="Transaction" />
       <FormButton onPress={handleSubmit}>{operation}</FormButton>
     </FormView>
   );
 };
 
-PostCommentForm.propTypes = {
+PostTransactionForm.propTypes = {
   handleSubmit: PropTypes.func,
-  comment: PropTypes.object,
+  transaction: PropTypes.object,
   onSubmit: PropTypes.func,
   submitting: PropTypes.bool,
   values: PropTypes.object
 };
 
-const PostCommentFormWithFormik = withFormik({
-  mapPropsToValues: props => ({ content: props.comment && props.comment.content }),
+const PostTransactionFormWithFormik = withFormik({
+  mapPropsToValues: props => ({ content: props.transaction && props.transaction.content }),
   validate: values => validate(values),
   handleSubmit: async (values, { resetForm, props: { onSubmit } }) => {
     await onSubmit(values);
     resetForm({ content: '' });
   },
-  displayName: 'CommentForm', // helps with React DevTools
+  displayName: 'TransactionForm', // helps with React DevTools
   enableReinitialize: true
 });
 
-export default PostCommentFormWithFormik(PostCommentForm);
+export default PostTransactionFormWithFormik(PostTransactionForm);

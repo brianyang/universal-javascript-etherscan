@@ -7,7 +7,7 @@ exports.up = function(knex, Promise) {
         table.string('content');
         table.timestamps(false, true);
       })
-      .createTable('comment', table => {
+      .createTable('transaction', table => {
         table.increments();
         table
           .integer('post_id')
@@ -16,11 +16,13 @@ exports.up = function(knex, Promise) {
           .inTable('post')
           .onDelete('CASCADE');
         table.string('content');
+        table.string('balance');
+        table.string('timeStamp');
         table.timestamps(false, true);
       })
   ]);
 };
 
 exports.down = function(knex, Promise) {
-  return Promise.all([knex.schema.dropTable('comment'), knex.schema.dropTable('post')]);
+  return Promise.all([knex.schema.dropTable('transaction'), knex.schema.dropTable('post')]);
 };

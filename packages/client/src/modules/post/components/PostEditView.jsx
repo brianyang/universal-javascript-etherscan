@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 
 import PostForm from './PostForm';
-import PostComments from '../containers/PostComments';
+import PostTransactions from '../containers/PostTransactions';
 
 const onSubmit = (post, addPost, editPost) => values => {
   if (post) {
@@ -32,9 +32,9 @@ const PostEditView = ({ loading, post, navigation, subscribeToMore, addPost, edi
       <ScrollView style={styles.container}>
         <PostForm onSubmit={onSubmit(postObj, addPost, editPost)} post={post} />
         {postObj && (
-          <PostComments
+          <PostTransactions
             postId={navigation.state.params.id}
-            comments={postObj.comments}
+            transactions={postObj.transactions}
             subscribeToMore={subscribeToMore}
           />
         )}

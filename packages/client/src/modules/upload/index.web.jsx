@@ -11,13 +11,7 @@ import Feature from '../connector';
 export default new Feature({
   catalogInfo: { upload: true },
   route: <Route exact path="/upload" component={Upload} />,
-  navItem: (
-    <MenuItem key="/upload">
-      <NavLink to="/upload" className="nav-link" activeClassName="active">
-        Upload
-      </NavLink>
-    </MenuItem>
-  ),
+  navItem: <MenuItem key="/upload" />,
   reducer: { upload: reducers },
   createFetch: uri =>
     createApolloFetch({

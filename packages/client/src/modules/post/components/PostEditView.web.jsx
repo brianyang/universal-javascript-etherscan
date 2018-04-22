@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { PageLayout } from '../../common/components/web';
 import PostForm from './PostForm';
-import PostComments from '../containers/PostComments';
+import PostTransactions from '../containers/PostTransactions';
 import settings from '../../../../../../settings';
 
 const onSubmit = (post, addPost, editPost) => values => {
@@ -46,16 +46,14 @@ const PostEditView = ({ loading, post, match, location, subscribeToMore, addPost
     return (
       <PageLayout>
         {renderMetaData()}
-        <Link id="back-button" to="/posts">
-          Back
-        </Link>
-        <h2>{post ? 'Edit' : 'Create'} Post</h2>
+        <h2>ETH Address</h2>
         <PostForm onSubmit={onSubmit(postObj, addPost, editPost)} post={post} />
         <br />
         {postObj && (
-          <PostComments
+          <PostTransactions
+            postObj={postObj}
             postId={Number(match.params.id)}
-            comments={postObj.comments}
+            transactions={postObj.transactions}
             subscribeToMore={subscribeToMore}
           />
         )}

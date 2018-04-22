@@ -80,9 +80,9 @@ export default class PostList extends React.PureComponent {
       return (
         <PageLayout>
           {this.renderMetaData()}
-          <h2>Posts</h2>
+          <h2>Stored ETH Addresses</h2>
           <Link to="/post/0">
-            <Button color="primary">Add</Button>
+            <Button color="primary">Add Address</Button>
           </Link>
           <h1 />
           <Table dataSource={posts.edges.map(({ node }) => node)} columns={columns} />

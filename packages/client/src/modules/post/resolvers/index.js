@@ -1,37 +1,39 @@
-import COMMENT_QUERY_CLIENT from '../graphql/CommentQuery.client.graphql';
+import TRANSACTION_QUERY_CLIENT from '../graphql/TransactionQuery.client.graphql';
 
-const TYPE_NAME = 'CommentState';
-const TYPE_NAME_COMMENT = 'Comment';
+const TYPE_NAME = 'TransactionState';
+const TYPE_NAME_TRANSACTION = 'Transaction';
 
 const defaults = {
-  comment: {
+  transaction: {
     id: null,
     content: '',
-    __typename: TYPE_NAME_COMMENT
+    balance: '',
+    timeStamp: '',
+    __typename: TYPE_NAME_TRANSACTION
   },
   __typename: TYPE_NAME
 };
 
 const resolvers = {
   Query: {
-    commentState: (_, args, { cache }) => {
-      const { comment: { comment } } = cache.readQuery({ query: COMMENT_QUERY_CLIENT });
+    transactionState: (_, args, { cache }) => {
+      const { transaction: { transaction } } = cache.readQuery({ query: TRANSACTION_QUERY_CLIENT });
       return {
-        comment: {
-          ...comment,
-          __typename: TYPE_NAME_COMMENT
+        transaction: {
+          ...transaction,
+          __typename: TYPE_NAME_TRANSACTION
         },
         __typename: TYPE_NAME
       };
     }
   },
   Mutation: {
-    onCommentSelect: async (_, { comment }, { cache }) => {
+    onTransactionSelect: async (_, { transaction }, { cache }) => {
       await cache.writeData({
         data: {
-          comment: {
-            ...comment,
-            __typename: TYPE_NAME_COMMENT
+          transaction: {
+            ...transaction,
+            __typename: TYPE_NAME_TRANSACTION
           },
           __typename: TYPE_NAME
         }
