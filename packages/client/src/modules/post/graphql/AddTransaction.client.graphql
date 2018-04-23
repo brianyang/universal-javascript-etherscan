@@ -1,0 +1,5 @@
+#import "./Transaction.graphql"
+
+mutation addTransactionClient($transaction: TransactionInfo!) {
+    onTransactionSelect(transaction: $transaction) @client
+}

@@ -15,8 +15,8 @@ const validate = values => validateForm(values, postFormSchema);
 const PostForm = ({ values, handleSubmit, submitting }) => {
   return (
     <Form name="post" onSubmit={handleSubmit}>
-      <Field name="title" component={RenderField} type="text" label="Title" value={values.title} />
-      <Field name="content" component={RenderField} type="text" label="Content" value={values.content} />
+      <Field name="title" component={RenderField} type="text" label="Name" value={values.title} />
+      <Field name="content" component={RenderField} type="text" label="Address" value={values.content} />
       <Button color="primary" type="submit" disabled={submitting}>
         Save
       </Button>

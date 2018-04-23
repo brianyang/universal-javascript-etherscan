@@ -3,7 +3,7 @@ import { createBatchResolver } from 'graphql-resolve-batch';
 
 const POST_SUBSCRIPTION = 'post_subscription';
 const POSTS_SUBSCRIPTION = 'posts_subscription';
-const COMMENT_SUBSCRIPTION = 'comment_subscription';
+const TRANSACTION_SUBSCRIPTION = 'transaction_subscription';
 
 export default pubsub => ({
   Query: {
@@ -40,8 +40,8 @@ export default pubsub => ({
     }
   },
   Post: {
-    comments: createBatchResolver((sources, args, context) => {
-      return context.Post.getCommentsForPostIds(sources.map(({ id }) => id));
+    transactions: createBatchResolver((sources, args, context) => {
+      return context.Post.getTransactionsForPostIds(sources.map(({ id }) => id));
     })
   },
   Mutation: {
@@ -90,25 +90,25 @@ export default pubsub => ({
       pubsub.publish(POST_SUBSCRIPTION, { postUpdated: post });
       return post;
     },
-    async addComment(obj, { input }, context) {
-      const [id] = await context.Post.addComment(input);
-      const comment = await context.Post.getComment(id);
+    async addTransaction(obj, { input }, context) {
+      const [id] = await context.Post.addTransaction(input);
+      const transaction = await context.Post.getTransaction(id);
       // publish for edit post page
-      pubsub.publish(COMMENT_SUBSCRIPTION, {
-        commentUpdated: {
+      pubsub.publish(TRANSACTION_SUBSCRIPTION, {
+        transactionUpdated: {
           mutation: 'CREATED',
-          id: comment.id,
+          id: transaction.id,
           postId: input.postId,
-          node: comment
+          node: transaction
         }
       });
-      return comment;
+      return transaction;
     },
-    async deleteComment(obj, { input: { id, postId } }, context) {
-      await context.Post.deleteComment(id);
+    async deleteTransaction(obj, { input: { id, postId } }, context) {
+      await context.Post.deleteTransaction(id);
       // publish for edit post page
-      pubsub.publish(COMMENT_SUBSCRIPTION, {
-        commentUpdated: {
+      pubsub.publish(TRANSACTION_SUBSCRIPTION, {
+        transactionUpdated: {
           mutation: 'DELETED',
           id,
           postId,
@@ -117,19 +117,19 @@ export default pubsub => ({
       });
       return { id };
     },
-    async editComment(obj, { input }, context) {
-      await context.Post.editComment(input);
-      const comment = await context.Post.getComment(input.id);
+    async editTransaction(obj, { input }, context) {
+      await context.Post.editTransaction(input);
+      const transaction = await context.Post.getTransaction(input.id);
       // publish for edit post page
-      pubsub.publish(COMMENT_SUBSCRIPTION, {
-        commentUpdated: {
+      pubsub.publish(TRANSACTION_SUBSCRIPTION, {
+        transactionUpdated: {
           mutation: 'UPDATED',
           id: input.id,
           postId: input.postId,
-          node: comment
+          node: transaction
         }
       });
-      return comment;
+      return transaction;
     }
   },
   Subscription: {
@@ -149,11 +149,11 @@ export default pubsub => ({
         }
       )
     },
-    commentUpdated: {
+    transactionUpdated: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(COMMENT_SUBSCRIPTION),
+        () => pubsub.asyncIterator(TRANSACTION_SUBSCRIPTION),
         (payload, variables) => {
-          return payload.commentUpdated.postId === variables.postId;
+          return payload.transactionUpdated.postId === variables.postId;
         }
       )
     }

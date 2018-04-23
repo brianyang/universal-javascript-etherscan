@@ -13,30 +13,30 @@ import {
 import { FontAwesome } from '@expo/vector-icons';
 import { SwipeAction } from '../../common/components/native';
 
-import PostCommentForm from './PostCommentForm';
+import PostTransactionForm from './PostTransactionForm';
 
-export default class PostCommentsView extends React.PureComponent {
+export default class PostTransactionsView extends React.PureComponent {
   static propTypes = {
     postId: PropTypes.number.isRequired,
-    comments: PropTypes.array.isRequired,
-    comment: PropTypes.object,
-    addComment: PropTypes.func.isRequired,
-    editComment: PropTypes.func.isRequired,
-    deleteComment: PropTypes.func.isRequired,
+    transactions: PropTypes.array.isRequired,
+    transaction: PropTypes.object,
+    addTransaction: PropTypes.func.isRequired,
+    editTransaction: PropTypes.func.isRequired,
+    deleteTransaction: PropTypes.func.isRequired,
     subscribeToMore: PropTypes.func.isRequired,
-    onCommentSelect: PropTypes.func.isRequired
+    onTransactionSelect: PropTypes.func.isRequired
   };
 
   keyExtractor = item => item.id;
 
   renderItemIOS = ({ item: { id, content } }) => {
-    const { comment, deleteComment, onCommentSelect } = this.props;
+    const { transaction, deleteTransaction, onTransactionSelect } = this.props;
     return (
       <SwipeAction
-        onPress={() => onCommentSelect({ id: id, content: content })}
+        onPress={() => onTransactionSelect({ id: id, content: content })}
         right={{
           text: 'Delete',
-          onPress: () => this.onCommentDelete(comment, deleteComment, onCommentSelect, id)
+          onPress: () => this.onTransactionDelete(transaction, deleteTransaction, onTransactionSelect, id)
         }}
       >
         {content}
@@ -45,14 +45,14 @@ export default class PostCommentsView extends React.PureComponent {
   };
 
   renderItemAndroid = ({ item: { id, content } }) => {
-    const { deleteComment, onCommentSelect, comment } = this.props;
+    const { deleteTransaction, onTransactionSelect, transaction } = this.props;
     return (
-      <TouchableWithoutFeedback onPress={() => onCommentSelect({ id: id, content: content })}>
+      <TouchableWithoutFeedback onPress={() => onTransactionSelect({ id: id, content: content })}>
         <View style={styles.postWrapper}>
           <Text style={styles.text}>{content}</Text>
           <TouchableOpacity
             style={styles.iconWrapper}
-            onPress={() => this.onCommentDelete(comment, deleteComment, onCommentSelect, id)}
+            onPress={() => this.onTransactionDelete(transaction, deleteTransaction, onTransactionSelect, id)}
           >
             <FontAwesome name="trash" size={20} style={{ color: '#3B5998' }} />
           </TouchableOpacity>
@@ -61,40 +61,40 @@ export default class PostCommentsView extends React.PureComponent {
     );
   };
 
-  onCommentDelete = (comment, deleteComment, onCommentSelect, id) => {
-    if (comment.id === id) {
-      onCommentSelect({ id: null, content: '' });
+  onTransactionDelete = (transaction, deleteTransaction, onTransactionSelect, id) => {
+    if (transaction.id === id) {
+      onTransactionSelect({ id: null, content: '' });
     }
 
-    deleteComment(id);
+    deleteTransaction(id);
   };
 
-  onSubmit = (comment, postId, addComment, editComment, onCommentSelect) => values => {
-    if (comment.id === null) {
-      addComment(values.content, postId);
+  onSubmit = (transaction, postId, addTransaction, editTransaction, onTransactionSelect) => values => {
+    if (transaction.id === null) {
+      addTransaction(values.content, postId);
     } else {
-      editComment(comment.id, values.content);
+      editTransaction(transaction.id, values.content);
     }
 
-    onCommentSelect({ id: null, content: '' });
+    onTransactionSelect({ id: null, content: '' });
     Keyboard.dismiss();
   };
 
   render() {
-    const { postId, comment, addComment, editComment, comments, onCommentSelect } = this.props;
+    const { postId, transaction, addTransaction, editTransaction, transactions, onTransactionSelect } = this.props;
     const renderItem = Platform.OS === 'android' ? this.renderItemAndroid : this.renderItemIOS;
 
     return (
       <View>
-        <Text style={styles.title}>Comments</Text>
-        <PostCommentForm
+        <Text style={styles.title}>Transactions</Text>
+        <PostTransactionForm
           postId={postId}
-          onSubmit={this.onSubmit(comment, postId, addComment, editComment, onCommentSelect)}
-          comment={comment}
+          onSubmit={this.onSubmit(transaction, postId, addTransaction, editTransaction, onTransactionSelect)}
+          transaction={transaction}
         />
-        {comments.length > 0 && (
+        {transactions.length > 0 && (
           <View style={styles.list} keyboardDismissMode="on-drag">
-            <FlatList data={comments} keyExtractor={this.keyExtractor} renderItem={renderItem} />
+            <FlatList data={transactions} keyExtractor={this.keyExtractor} renderItem={renderItem} />
           </View>
         )}
       </View>

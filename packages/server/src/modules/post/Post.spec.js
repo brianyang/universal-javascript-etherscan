@@ -9,7 +9,7 @@ import EDIT_POST from '../../../../client/src/modules/post/graphql/EditPost.grap
 import DELETE_POST from '../../../../client/src/modules/post/graphql/DeletePost.graphql';
 import POSTS_SUBSCRIPTION from '../../../../client/src/modules/post/graphql/PostsSubscription.graphql';
 
-describe('Post and comments example API works', () => {
+describe('Post and transactions example API works', () => {
   let apollo;
 
   before(() => {
@@ -47,7 +47,7 @@ describe('Post and comments example API works', () => {
     });
   });
 
-  step('Query single post with comments works', async () => {
+  step('Query single post with transactions works', async () => {
     let result = await apollo.query({ query: POST_QUERY, variables: { id: 1 } });
 
     expect(result.data).to.deep.equal({
@@ -56,16 +56,16 @@ describe('Post and comments example API works', () => {
         title: 'Post title 1',
         content: 'Post content 1',
         __typename: 'Post',
-        comments: [
+        transactions: [
           {
             id: 1,
-            content: 'Comment title 1 for post 1',
-            __typename: 'Comment'
+            content: 'Transaction title 1 for post 1',
+            __typename: 'Transaction'
           },
           {
             id: 2,
-            content: 'Comment title 2 for post 1',
-            __typename: 'Comment'
+            content: 'Transaction title 2 for post 1',
+            __typename: 'Transaction'
           }
         ]
       }

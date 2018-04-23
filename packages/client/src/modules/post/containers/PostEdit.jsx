@@ -89,7 +89,7 @@ export default compose(
               id: null,
               title: title,
               content: content,
-              comments: []
+              transactions: []
             }
           },
           updateQueries: {

@@ -3,13 +3,15 @@ type Post {
   id: Int!
   title: String!
   content: String!
-  comments: [Comment]
+  transactions: [Transaction]
 }
 
-# Comment
-type Comment {
+# Transaction
+type Transaction {
   id: Int!
   content: String!
+  balance: String
+  timeStamp: String
 }
 
 # Edges for Posts
@@ -45,12 +47,12 @@ extend type Mutation {
   deletePost(id: Int!): Post
   # Edit a post
   editPost(input: EditPostInput!): Post
-  # Add comment to post
-  addComment(input: AddCommentInput!): Comment
-  # Delete a comment
-  deleteComment(input: DeleteCommentInput!): Comment
-  # Edit a comment
-  editComment(input: EditCommentInput!): Comment
+  # Add transaction to post
+  addTransaction(input: AddTransactionInput!): Transaction
+  # Delete a transaction
+  deleteTransaction(input: DeleteTransactionInput!): Transaction
+  # Edit a transaction
+  editTransaction(input: EditTransactionInput!): Transaction
 }
 
 # Input for addPost Mutation
@@ -66,25 +68,27 @@ input EditPostInput {
   content: String!
 }
 
-# Input for addComment Mutation
-input AddCommentInput {
+# Input for addTransaction Mutation
+input AddTransactionInput {
   content: String!
-  # Needed for commentUpdated Subscription filter
+  balance: String
+  timeStamp: String
+  # Needed for transactionUpdated Subscription filter
   postId: Int!
 }
 
-# Input for editComment Mutation
-input DeleteCommentInput {
+# Input for editTransaction Mutation
+input DeleteTransactionInput {
   id: Int!
-  # Needed for commentUpdated Subscription filter
+  # Needed for transactionUpdated Subscription filter
   postId: Int!
 }
 
-# Input for deleteComment Mutation
-input EditCommentInput {
+# Input for deleteTransaction Mutation
+input EditTransactionInput {
   id: Int!
   content: String!
-  # Needed for commentUpdated Subscription filter
+  # Needed for transactionUpdated Subscription filter
   postId: Int!
 }
 
@@ -93,8 +97,8 @@ extend type Subscription {
   postUpdated(id: Int!): Post
   # Subscription for post list
   postsUpdated(endCursor: Int!): UpdatePostPayload
-  # Subscription for comments
-  commentUpdated(postId: Int!): UpdateCommentPayload
+  # Subscription for transactions
+  transactionUpdated(postId: Int!): UpdateTransactionPayload
 }
 
 # Payload for postsUpdated Subscription
@@ -104,10 +108,10 @@ type UpdatePostPayload {
   node: Post
 }
 
-# Payload for commentUpdated Subscription
-type UpdateCommentPayload {
+# Payload for transactionUpdated Subscription
+type UpdateTransactionPayload {
   mutation: String!
   id: Int
   postId: Int!
-  node: Comment
+  node: Transaction
 }

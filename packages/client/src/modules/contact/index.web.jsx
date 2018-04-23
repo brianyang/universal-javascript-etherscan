@@ -7,11 +7,5 @@ import Feature from '../connector';
 
 export default new Feature({
   route: <Route exact path="/contact" component={Contact} />,
-  navItem: (
-    <MenuItem key="contact">
-      <NavLink to="/contact" className="nav-link" activeClassName="active">
-        Contact Us
-      </NavLink>
-    </MenuItem>
-  )
+  navItem: <MenuItem key="contact" />
 });

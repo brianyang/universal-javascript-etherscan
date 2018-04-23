@@ -1,0 +1,12 @@
+#import "./Transaction.graphql"
+
+subscription onTransactionUpdated($postId: Int!) {
+  transactionUpdated(postId: $postId) {
+    mutation
+    id
+    postId
+    node {
+      ... TransactionInfo
+    }
+  }
+}

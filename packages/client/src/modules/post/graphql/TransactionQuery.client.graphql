@@ -1,0 +1,6 @@
+#import "./Transaction.graphql"
+query transactionState {
+    transaction @client {
+        ...TransactionInfo
+    }
+}
